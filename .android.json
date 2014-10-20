@@ -1,0 +1,1 @@
+{"orientation": "landscape", "include_pil": false, "expansion": false, "icon_name": "buttons", "include_sqlite": false, "permissions": [], "layout": "external", "name": "Pygame and OuyaController", "package": "org.hg.ouyacontroller", "source": true, "version": "1", "numeric_version": "1"}
