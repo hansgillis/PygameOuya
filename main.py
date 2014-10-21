@@ -19,6 +19,12 @@ def main():
         window.blit(background) #Blit a scaled image to position (0,0)
         window.safe_zone() #Show the safe_zone for ouya television screens ( 5% ) 
         window.stop() #If pressed escape button or controller.BUTTON_A exit the game
+
+        if window.get_left_stick() != (0.0, 0.0): #For clean logging
+            print("Controller > LSTICK : ",(window.get_left_stick()))
+            
+        if window.get_right_stick() != (0.0, 0.0): #For clean logging
+            print("Controller > RSTICK : ",(window.get_right_stick()))
     
         if window.down(window.controller.BUTTON_O):     print("Controller >   DOWN : BUTTON_O")
         elif window.motion(window.controller.BUTTON_O): print("Controller > MOTION : BUTTON_O")

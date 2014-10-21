@@ -160,6 +160,12 @@ class Engine(object):
     def motion(self, button, player=0):
         return self.controller.motion(button, player)
 
+    def get_left_stick(self, player=0):
+        return self.controller.get_left_stick(player)
+
+    def get_right_stick(self, player=0):
+        return self.controller.get_right_stick(player)
+
     def get_text(self, font, text, color="white"):
         try:
             color = pygame.color.Color(color)

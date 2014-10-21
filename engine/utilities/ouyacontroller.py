@@ -12,13 +12,11 @@ class Event(object):
         self.player = player
 
     def change(self):
-        if android:
-            if self.type != activity.getButton(self.player, self.key):
-                self.type = not self.type
-                return True
-            else:
-                return False
-        return False
+        if self.type != activity.getBUTTON(self.player, self.key):
+            self.type = not self.type
+            return True
+        else:
+            return False
 
     def is_event(self):
         return self.change()
@@ -39,6 +37,11 @@ class OuyaController(object):
     BUTTON_R1           = 0x1000
     BUTTON_R2           = 0x2000
     BUTTON_R3           = 0x4000
+    
+    AXIS_LS_X = 0x0001
+    AXIS_LS_Y = 0x0002
+    AXIS_RS_X = 0x0004
+    AXIS_RS_Y = 0x0008
     
     def __init__(self, MAX_CONTROLLERS=4):
         self.events = {}
@@ -69,16 +72,30 @@ class OuyaController(object):
             self.players.append(y)
 
     def get_events(self):
-        for p in range(0, self.MAX_CONTROLLERS):
-            activity.setPad(p)
-            for event in self.players[p]:
-                if event.is_event():
-                    if event.type == self.KEYDOWN:
-                        self.events.update({"%s%s"%(event.key, p): [event.type, self.DOWN]})
-                    elif event.type == self.KEYUP:
-                        self.events.update({"%s%s"%(event.key, p): [event.type, self.UP]})
+        if android:
+            for p in range(0, self.MAX_CONTROLLERS):
+                activity.setDPAD(p)
+                activity.setAXIS(p)
+                for event in self.players[p]:
+                    if event.is_event():
+                        if event.type == self.KEYDOWN:
+                            self.events.update({"%s%s"%(event.key, p): [event.type, self.DOWN]})
+                        elif event.type == self.KEYUP:
+                            self.events.update({"%s%s"%(event.key, p): [event.type, self.UP]})
     
 
+    def get_left_stick(self, player=0):
+        if android:
+            return (activity.getAXIS(player, self.AXIS_LS_X),
+                    activity.getAXIS(player, self.AXIS_LS_Y))
+
+    def get_right_stick(self, player=0):
+        if android:
+            return (activity.getAXIS(player, self.AXIS_RS_X),
+                    activity.getAXIS(player, self.AXIS_RS_Y))
+        
+        return (0.0, 0.0)
+        
     def update(self):
         flag = []
         for event in self.events:
@@ -107,17 +124,17 @@ class OuyaController(object):
 
         return event
 
-    def down(self, name, p=0):
-        stat = self._stat("%s%s"%(name, p))
+    def down(self, name, player=0):
+        stat = self._stat("%s%s"%(name, player))
         if stat == self.DOWN:return True
         else:return False
 
-    def motion(self, name, p=0):
-        stat = self._stat("%s%s"%(name, p))
+    def motion(self, name, player=0):
+        stat = self._stat("%s%s"%(name, player))
         if stat == self.MOTION:return True
         else:return False
 
-    def up(self, name, p=0):
-        stat = self._stat("%s%s"%(name, p))
+    def up(self, name, player=0):
+        stat = self._stat("%s%s"%(name, player))
         if stat == self.UP:return True
         else:return False
